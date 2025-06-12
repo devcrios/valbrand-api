@@ -20,3 +20,9 @@ email-validator==2.1.0      # Para validación de emails (si no está incluido e
 redis==5.0.1                # Para almacenar tokens en blacklist en producción
 celery==5.3.4               # Para tareas asíncronas como envío de emails
 python-dateutil==2.8.2     # Para manejo de fechas más avanzado
+
+# Para el sistema de login / JWT
+email-validator==2.1.0              # Validación de formatos de email en Pydantic
+
+# Manejo avanzado de fechas (si lo necesitas)
+python-dateutil==2.8.2

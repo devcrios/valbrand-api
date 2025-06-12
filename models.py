@@ -575,3 +575,22 @@ class FinancieroCuentaCobrar(Base):
     estado            = Column("ESTADO", String(20), default="VIGENTE")
     notas             = Column("NOTAS", Text)
     fecha_creacion    = Column("FECHA_CREACION", DateTime(timezone=True), server_default=func.now())
+
+class AuditLog(Base):
+    __tablename__ = "AUDIT_LOGS"
+    
+    id = Column("ID", Integer, primary_key=True, index=True)
+    endpoint = Column("ENDPOINT", String(255), nullable=False)
+    method = Column("METHOD", String(10), nullable=False)
+    api_key = Column("API_KEY", String(255), nullable=False)
+    request_body = Column("REQUEST_BODY", Text)
+    query_params = Column("QUERY_PARAMS", Text)
+    user_agent = Column("USER_AGENT", String(500))
+    ip_address = Column("IP_ADDRESS", String(45))
+    status_code = Column("STATUS_CODE", Integer)
+    timestamp = Column("TIMESTAMP", DateTime(timezone=True), nullable=False)
+    
+    # Índices para optimizar consultas
+    __table_args__ = (
+        {'mysql_engine': 'InnoDB'}
+    )

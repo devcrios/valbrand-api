@@ -2,6 +2,10 @@ from fastapi import FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime, timezone
+import logging
+
+# Importar el middleware de auditoría
+from audit_middleware import AuditMiddleware
 
 from routers.clients import router as clients_router
 from routers.users import router as users_router
@@ -33,6 +37,10 @@ from routers import (
 )
 from routers.auth_routes import router as auth_router
 
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = FastAPI(
     title="ValBrand CRM",
     description="API del CRM de ValBrand",
@@ -49,6 +57,9 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# Agregar middleware de auditoría
+app.add_middleware(AuditMiddleware)
 
 # Core routers
 app.include_router(clients_router)
