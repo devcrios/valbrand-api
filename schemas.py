@@ -39,8 +39,8 @@ class ClienteUpdate(BaseModel):
 
 class Cliente(ClienteBase):
     id_cliente: int
-    fecha_registro: datetime.datetime
-    fecha_actualizacion: datetime.datetime
+    fecha_registro: datetime
+    fecha_actualizacion: datetime
 
     class Config:
         orm_mode = True
@@ -75,8 +75,8 @@ class UsuarioUpdate(BaseModel):
 
 class Usuario(UsuarioBase):
     id_usuario: int
-    fecha_registro: datetime.datetime
-    fecha_ultimo_acceso: Optional[datetime.datetime]
+    fecha_registro: datetime
+    fecha_ultimo_acceso: Optional[datetime]
 
     class Config:
         orm_mode = True
@@ -132,8 +132,8 @@ class ProyectoOut(ProyectoBase):
     fecha_entrega_real: Optional[datetime.date]
     fecha_finalizacion: Optional[datetime.date]
     progreso_porcentaje: float
-    fecha_creacion: datetime.datetime
-    fecha_actualizacion: datetime.datetime
+    fecha_creacion: datetime
+    fecha_actualizacion: datetime
     class Config:
         orm_mode = True
 
@@ -163,8 +163,8 @@ class MoldeUpdate(BaseModel):
 
 class MoldeOut(MoldeBase):
     id_molde: int
-    fecha_creacion: datetime.datetime
-    fecha_modificacion: datetime.datetime
+    fecha_creacion: datetime
+    fecha_modificacion: datetime
     class Config: orm_mode = True
 
 class ArchivoMoldeBase(BaseModel):
@@ -179,7 +179,7 @@ class ArchivoMoldeBase(BaseModel):
 class ArchivoMoldeCreate(ArchivoMoldeBase): archivo: bytes
 class ArchivoMoldeOut(ArchivoMoldeBase):
     id_archivo: int
-    fecha_subida: datetime.datetime
+    fecha_subida: datetime
     class Config: orm_mode = True
 
 class MuestraBase(BaseModel):
@@ -211,9 +211,9 @@ class MuestraUpdate(BaseModel):
 
 class MuestraOut(MuestraBase):
     id_muestra: int
-    fecha_creacion: datetime.datetime
-    fecha_entrega_estimada: Optional[datetime.datetime]
-    fecha_entrega_real: Optional[datetime.datetime]
+    fecha_creacion: datetime
+    fecha_entrega_estimada: Optional[datetime]
+    fecha_entrega_real: Optional[datetime]
     class Config: orm_mode = True
 
 class ImagenMuestraBase(BaseModel):
@@ -227,7 +227,7 @@ class ImagenMuestraBase(BaseModel):
 class ImagenMuestraCreate(ImagenMuestraBase): imagen: bytes
 class ImagenMuestraOut(ImagenMuestraBase):
     id_imagen: int
-    fecha_subida: datetime.datetime
+    fecha_subida: datetime
     class Config: orm_mode = True
 
 class TallerBase(BaseModel):
@@ -247,7 +247,7 @@ class TallerCreate(TallerBase): pass
 class TallerUpdate(TallerBase): pass
 class TallerOut(TallerBase):
     id_taller: int
-    fecha_reg: datetime.datetime
+    fecha_reg: datetime
     class Config: orm_mode = True
 
 class EtapaBase(BaseModel):
@@ -289,7 +289,7 @@ class PlanOut(PlanBase):
     cantidad_comp: int
     fecha_ini_real: Optional[datetime.date]
     fecha_fin_real: Optional[datetime.date]
-    fecha_creacion: datetime.datetime
+    fecha_creacion: datetime
     class Config: orm_mode = True
 
 class DetallePlanBase(BaseModel):
@@ -335,7 +335,7 @@ class MaterialUpdate(BaseModel):
 
 class MaterialOut(MaterialBase):
     id_material: int
-    fecha_registro: datetime.datetime
+    fecha_registro: datetime
     class Config: orm_mode = True
 
 class MatProyectoBase(BaseModel):
@@ -421,7 +421,7 @@ class EntregableCreate(EntregableBase):
 
 class EntregableOut(EntregableBase):
     id_entregable: int
-    fecha_creacion: datetime.datetime
+    fecha_creacion: datetime
     class Config:
         orm_mode = True
 
@@ -442,7 +442,7 @@ class RevisionCreate(RevisionBase):
 
 class RevisionOut(RevisionBase):
     id_revision: int
-    fecha_revision: datetime.datetime
+    fecha_revision: datetime
     archivos_revision: Optional[bytes]
     nombre_archivos: Optional[str]
     class Config:
@@ -463,7 +463,7 @@ class FeedbackFechaCreate(FeedbackFechaBase):
 
 class FeedbackFechaOut(FeedbackFechaBase):
     id_feedback: int
-    fecha_creacion: datetime.datetime
+    fecha_creacion: datetime
     class Config:
         orm_mode = True
 
