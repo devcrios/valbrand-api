@@ -187,7 +187,7 @@ class TallerEstado(enum.Enum):
 
 class ProduccionTaller(Base):
     __tablename__ = "PRODUCCION_TALLERES"
-    id_taller     = Column(Integer, "ID_TALLER", primary_key=True, index=True)
+    id_taller     = Column(Integer, name="ID_TALLER", primary_key=True, index=True)
     nombre        = Column(String(100), nullable=False)
     codigo        = Column(String(20), unique=True)
     direccion     = Column(Text)
