@@ -36,6 +36,7 @@ from routers import (
     ecommerce_datos_marca
 )
 from routers.auth_routes import router as auth_router
+from routers.audit_router import router as audit_router  # Importar el router de auditoría
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -49,7 +50,13 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS configuration
+# ORDEN CORRECTO DE MIDDLEWARES
+# El orden importa: se ejecutan en orden inverso al registro
+
+# 1. Primero agregar middleware de auditoría (se ejecutará último, después de procesar la respuesta)
+app.add_middleware(AuditMiddleware)
+
+# 2. Después CORS (se ejecutará antes que auditoría, pero después de procesar la request)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # En producción especifica dominios específicos
@@ -57,9 +64,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
-
-# Agregar middleware de auditoría
-app.add_middleware(AuditMiddleware)
 
 # Core routers
 app.include_router(clients_router)
@@ -104,6 +108,9 @@ app.include_router(cuentas_router)
 # Authentication router
 app.include_router(auth_router)
 
+# Audit router (agregar el router de auditoría)
+app.include_router(audit_router)
+
 
 @app.get("/", tags=["root"])
 def read_root():
@@ -122,6 +129,15 @@ def health_check():
         "status": "healthy",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "service": "ValBrand CRM API"
+    }
+
+# Endpoint de prueba para verificar auditoría
+@app.post("/test/audit", tags=["test"])
+def test_audit_endpoint():
+    """Endpoint de prueba para verificar que la auditoría funciona"""
+    return {
+        "message": "Este endpoint debería aparecer en los logs de auditoría",
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 if __name__ == "__main__":
