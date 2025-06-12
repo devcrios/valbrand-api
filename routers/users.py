@@ -85,3 +85,50 @@ def delete_usuario(user_id: int, db: Session = Depends(get_db)):
     
     db.delete(db_usuario)
     db.commit()
+
+@router.post("/create-initial-admin", response_model=schemas.Usuario)
+def create_initial_admin(db: Session = Depends(get_db)):
+    """
+    Endpoint temporal para crear el primer usuario administrador
+    ⚠️ ELIMINAR DESPUÉS DEL PRIMER USO POR SEGURIDAD
+    """
+    
+    # Verificar si ya existe un administrador
+    existing_admin = db.query(models.Usuario).filter(
+        models.Usuario.id_rol == 1  # Asumiendo que 1 es rol admin
+    ).first()
+    
+    if existing_admin:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Ya existe un usuario administrador en el sistema"
+        )
+    
+    # Datos del admin inicial (CAMBIAR ESTOS VALORES)
+    admin_data = {
+        "nombre": "Administrador",
+        "apellidos": "Sistema",
+        "email": "dev.crios@gmail.com",  # ⚠️ CAMBIAR ESTE EMAIL
+        "password": "sa1234",         # ⚠️ CAMBIAR ESTA CONTRASEÑA
+        "id_rol": 1,                     # Rol de administrador
+        "cargo": "Administrador del Sistema",
+        "departamento": "IT",
+        "telefono": None,
+        "configuracion_notificaciones": None,
+        "creado_por": None
+    }
+    
+    # Crear usuario
+    hashed_password = pwd_context.hash(admin_data["password"])
+    user_data_without_password = {k: v for k, v in admin_data.items() if k != "password"}
+    
+    db_usuario = models.Usuario(
+        **user_data_without_password, 
+        contrasena=hashed_password
+    )
+    
+    db.add(db_usuario)
+    db.commit()
+    db.refresh(db_usuario)
+    
+    return db_usuario
