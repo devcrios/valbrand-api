@@ -203,7 +203,7 @@ class ProduccionTaller(Base):
 
 class ProduccionEtapa(Base):
     __tablename__ = "PRODUCCION_ETAPAS"
-    id_etapa      = Column(Integer, "ID_ETAPA", primary_key=True, index=True)
+    id_etapa      = Column(Integer, name="ID_ETAPA", primary_key=True, index=True)
     nombre        = Column(String(50), nullable=False)
     descripcion   = Column(Text)
     orden         = Column(Integer)
@@ -212,7 +212,7 @@ class ProduccionEtapa(Base):
 
 class ProduccionPlan(Base):
     __tablename__ = "PRODUCCION_PLANES"
-    id_plan        = Column(Integer, "ID_PLAN", primary_key=True, index=True)
+    id_plan        = Column(Integer, name="ID_PLAN", primary_key=True, index=True)
     codigo_plan    = Column(String(50), unique=True, nullable=False)
     id_proyecto    = Column(Integer, ForeignKey("PROYECTOS_PEDIDOS.ID_PROYECTO"))
     id_taller      = Column(Integer, ForeignKey("PRODUCCION_TALLERES.ID_TALLER"))
@@ -233,7 +233,7 @@ class ProduccionPlan(Base):
 
 class ProduccionDetallePlan(Base):
     __tablename__ = "PRODUCCION_DETALLE_PLAN"
-    id_detalle     = Column(Integer, "ID_DETALLE_PLAN", primary_key=True, index=True)
+    id_detalle     = Column(Integer, name="ID_DETALLE_PLAN", primary_key=True, index=True)
     id_plan        = Column(Integer, ForeignKey("PRODUCCION_PLANES.ID_PLAN", ondelete="CASCADE"))
     id_etapa       = Column(Integer, ForeignKey("PRODUCCION_ETAPAS.ID_ETAPA"))
     fecha_ini_est  = Column(Date)
@@ -248,7 +248,7 @@ class ProduccionDetallePlan(Base):
 
 class ProduccionMaterial(Base):
     __tablename__ = "PRODUCCION_MATERIALES"
-    id_material    = Column(Integer, "ID_MATERIAL", primary_key=True, index=True)
+    id_material    = Column(Integer, name="ID_MATERIAL", primary_key=True, index=True)
     codigo_material= Column(String(50), unique=True, nullable=False)
     nombre         = Column(String(100), nullable=False)
     descripcion    = Column(Text)
@@ -263,7 +263,7 @@ class ProduccionMaterial(Base):
 
 class ProduccionMaterialProyecto(Base):
     __tablename__ = "PRODUCCION_MATERIALES_PROYECTO"
-    id_mat_proy    = Column(Integer, "ID_MATERIAL_PROYECTO", primary_key=True, index=True)
+    id_mat_proy    = Column(Integer, name="ID_MATERIAL_PROYECTO", primary_key=True, index=True)
     id_proyecto    = Column(Integer, ForeignKey("PROYECTOS_PEDIDOS.ID_PROYECTO"))
     id_material    = Column(Integer, ForeignKey("PRODUCCION_MATERIALES.ID_MATERIAL"))
     cantidad_req   = Column(DECIMAL(10,2), nullable=False)
