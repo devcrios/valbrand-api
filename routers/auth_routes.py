@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from datetime import timedelta
 import models
-from schemas import auth_schemas
+from schemas import LoginResponse, LoginRequest, UserInfo, TokenResponse, MessageResponse, ForgotPasswordRequest, ResetPasswordRequest
 import auth_utils
 from dependencies import get_db, get_api_key
 
@@ -15,10 +15,10 @@ router = APIRouter(
 # Lista negra de tokens (en producción usar Redis o base de datos)
 blacklisted_tokens = set()
 
-@router.post("/login", response_model=auth_schemas.LoginResponse)
+@router.post("/login", response_model=LoginResponse)
 def login(
     request: Request,
-    login_data: auth_schemas.LoginRequest, 
+    login_data: LoginRequest, 
     db: Session = Depends(get_db)
 ):
     """Iniciar sesión de usuario"""
@@ -66,14 +66,14 @@ def login(
     # Crear información del usuario
     user_info = auth_utils.create_user_info_dict(usuario)
     
-    return auth_schemas.LoginResponse(
+    return LoginResponse(
         access_token=access_token,
         token_type="bearer",
         expires_in=auth_utils.TOKEN_EXPIRE_MINUTES * 60,  # en segundos
-        user=auth_schemas.UserInfo(**user_info)
+        user=UserInfo(**user_info)
     )
 
-@router.post("/logout", response_model=auth_schemas.MessageResponse)
+@router.post("/logout", response_model=MessageResponse)
 def logout(request: Request):
     """Cerrar sesión de usuario"""
     
@@ -85,9 +85,9 @@ def logout(request: Request):
         # Agregar token a lista negra
         blacklisted_tokens.add(token)
     
-    return auth_schemas.MessageResponse(message="Sesión cerrada exitosamente")
+    return MessageResponse(message="Sesión cerrada exitosamente")
 
-@router.post("/refresh", response_model=auth_schemas.TokenResponse)
+@router.post("/refresh", response_model=TokenResponse)
 def refresh_token(request: Request, db: Session = Depends(get_db)):
     """Renovar token de acceso"""
     
@@ -145,15 +145,15 @@ def refresh_token(request: Request, db: Session = Depends(get_db)):
         expires_delta=access_token_expires
     )
     
-    return auth_schemas.TokenResponse(
+    return TokenResponse(
         access_token=new_access_token,
         token_type="bearer",
         expires_in=auth_utils.TOKEN_EXPIRE_MINUTES * 60
     )
 
-@router.post("/forgot-password", response_model=auth_schemas.MessageResponse)
+@router.post("/forgot-password", response_model=MessageResponse)
 def forgot_password(
-    request_data: auth_schemas.ForgotPasswordRequest, 
+    request_data: ForgotPasswordRequest, 
     db: Session = Depends(get_db)
 ):
     """Solicitar reset de contraseña"""
@@ -164,7 +164,7 @@ def forgot_password(
     
     # Por seguridad, siempre devolver el mismo mensaje
     if not usuario:
-        return auth_schemas.MessageResponse(
+        return MessageResponse(
             message="Si el email existe, se ha enviado un enlace de recuperación"
         )
     
@@ -175,13 +175,13 @@ def forgot_password(
     # Por ahora solo lo loggeamos (NO hacer esto en producción)
     print(f"Token de reset para {usuario.email}: {reset_token}")
     
-    return auth_schemas.MessageResponse(
+    return MessageResponse(
         message="Si el email existe, se ha enviado un enlace de recuperación"
     )
 
-@router.post("/reset-password", response_model=auth_schemas.MessageResponse)
+@router.post("/reset-password", response_model=MessageResponse)
 def reset_password(
-    request_data: auth_schemas.ResetPasswordRequest, 
+    request_data: ResetPasswordRequest, 
     db: Session = Depends(get_db)
 ):
     """Resetear contraseña con token"""
@@ -203,11 +203,11 @@ def reset_password(
     # Resetear intentos de login por si estaba bloqueado
     auth_utils.reset_login_attempts(db, usuario)
     
-    return auth_schemas.MessageResponse(
+    return MessageResponse(
         message="Contraseña actualizada exitosamente"
     )
 
-@router.get("/me", response_model=auth_schemas.UserInfo)
+@router.get("/me", response_model=UserInfo)
 def get_current_user_info(request: Request, db: Session = Depends(get_db)):
     """Obtener información del usuario actual"""
     
@@ -250,4 +250,4 @@ def get_current_user_info(request: Request, db: Session = Depends(get_db)):
         )
     
     user_info = auth_utils.create_user_info_dict(usuario)
-    return auth_schemas.UserInfo(**user_info)
+    return UserInfo(**user_info)
