@@ -43,7 +43,7 @@ class Cliente(ClienteBase):
     fecha_actualizacion: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 class UsuarioBase(BaseModel):
     nombre: str
@@ -79,7 +79,7 @@ class Usuario(UsuarioBase):
     fecha_ultimo_acceso: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 class ProyectoTipoBase(BaseModel):
     nombre: str
@@ -97,8 +97,9 @@ class ProyectoTipoUpdate(BaseModel):
 class ProyectoTipoOut(ProyectoTipoBase):
     id_tipo_proyecto: int
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
+# PROBLEMA PRINCIPAL AQUÍ - línea 102 aproximadamente
 class ProyectoBase(BaseModel):
     codigo_proyecto: str = Field(..., max_length=50)
     id_cliente: int
@@ -106,8 +107,8 @@ class ProyectoBase(BaseModel):
     id_tipo_proyecto: int
     descripcion: Optional[str]
     especificaciones_tecnicas: Optional[str]
-    fecha_inicio: Optional[datetime.date]
-    fecha_entrega_estimada: Optional[datetime.date]
+    fecha_inicio: Optional[date]  # Cambio: era datetime.date
+    fecha_entrega_estimada: Optional[date]  # Cambio: era datetime.date
     estado: Optional[str]
     prioridad: Optional[str]
     notas: Optional[str]
@@ -120,8 +121,8 @@ class ProyectoUpdate(BaseModel):
     nombre_proyecto: Optional[str]
     descripcion: Optional[str]
     especificaciones_tecnicas: Optional[str]
-    fecha_inicio: Optional[datetime.date]
-    fecha_entrega_estimada: Optional[datetime.date]
+    fecha_inicio: Optional[date]  # Cambio: era datetime.date
+    fecha_entrega_estimada: Optional[date]  # Cambio: era datetime.date
     estado: Optional[str]
     prioridad: Optional[str]
     progreso_porcentaje: Optional[float]
@@ -129,13 +130,13 @@ class ProyectoUpdate(BaseModel):
 
 class ProyectoOut(ProyectoBase):
     id_proyecto: int
-    fecha_entrega_real: Optional[datetime.date]
-    fecha_finalizacion: Optional[datetime.date]
+    fecha_entrega_real: Optional[date]  # Cambio: era datetime.date
+    fecha_finalizacion: Optional[date]  # Cambio: era datetime.date
     progreso_porcentaje: float
     fecha_creacion: datetime
     fecha_actualizacion: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 class MoldeBase(BaseModel):
     codigo_molde: str
@@ -150,7 +151,9 @@ class MoldeBase(BaseModel):
     observaciones_tecnicas: Optional[str]
     creado_por: Optional[int]
 
-class MoldeCreate(MoldeBase): pass
+class MoldeCreate(MoldeBase): 
+    pass
+
 class MoldeUpdate(BaseModel):
     nombre_molde: Optional[str]
     categoria: Optional[str]
@@ -165,7 +168,8 @@ class MoldeOut(MoldeBase):
     id_molde: int
     fecha_creacion: datetime
     fecha_modificacion: datetime
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class ArchivoMoldeBase(BaseModel):
     id_molde: int
@@ -176,11 +180,14 @@ class ArchivoMoldeBase(BaseModel):
     notas: Optional[str]
     subido_por: Optional[int]
 
-class ArchivoMoldeCreate(ArchivoMoldeBase): archivo: bytes
+class ArchivoMoldeCreate(ArchivoMoldeBase): 
+    archivo: bytes
+
 class ArchivoMoldeOut(ArchivoMoldeBase):
     id_archivo: int
     fecha_subida: datetime
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class MuestraBase(BaseModel):
     codigo_muestra: str
@@ -197,7 +204,9 @@ class MuestraBase(BaseModel):
     costo: Optional[float]
     creada_por: Optional[int]
 
-class MuestraCreate(MuestraBase): pass
+class MuestraCreate(MuestraBase): 
+    pass
+
 class MuestraUpdate(BaseModel):
     nombre_muestra: Optional[str]
     descripcion: Optional[str]
@@ -214,7 +223,8 @@ class MuestraOut(MuestraBase):
     fecha_creacion: datetime
     fecha_entrega_estimada: Optional[datetime]
     fecha_entrega_real: Optional[datetime]
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class ImagenMuestraBase(BaseModel):
     id_muestra: int
@@ -224,11 +234,14 @@ class ImagenMuestraBase(BaseModel):
     orden_visualizacion: Optional[int]
     subido_por: Optional[int]
 
-class ImagenMuestraCreate(ImagenMuestraBase): imagen: bytes
+class ImagenMuestraCreate(ImagenMuestraBase): 
+    imagen: bytes
+
 class ImagenMuestraOut(ImagenMuestraBase):
     id_imagen: int
     fecha_subida: datetime
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class TallerBase(BaseModel):
     nombre: str
@@ -243,12 +256,17 @@ class TallerBase(BaseModel):
     calificacion: Optional[float]
     notas: Optional[str]
 
-class TallerCreate(TallerBase): pass
-class TallerUpdate(TallerBase): pass
+class TallerCreate(TallerBase): 
+    pass
+
+class TallerUpdate(TallerBase): 
+    pass
+
 class TallerOut(TallerBase):
     id_taller: int
     fecha_reg: datetime
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class EtapaBase(BaseModel):
     nombre: str
@@ -257,18 +275,23 @@ class EtapaBase(BaseModel):
     tiempo_estim: Optional[float]
     activo: Optional[bool]
 
-class EtapaCreate(EtapaBase): pass
-class EtapaUpdate(EtapaBase): pass
+class EtapaCreate(EtapaBase): 
+    pass
+
+class EtapaUpdate(EtapaBase): 
+    pass
+
 class EtapaOut(EtapaBase):
     id_etapa: int
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class PlanBase(BaseModel):
     codigo_plan: str
     id_proyecto: int
     id_taller: Optional[int]
-    fecha_ini_est: Optional[datetime.date]
-    fecha_fin_est: Optional[datetime.date]
+    fecha_ini_est: Optional[date]  # Cambio: era datetime.date
+    fecha_fin_est: Optional[date]  # Cambio: era datetime.date
     estado: Optional[str]
     cantidad_prod: int
     prioridad: Optional[str]
@@ -277,7 +300,9 @@ class PlanBase(BaseModel):
     responsable: Optional[str]
     creado_por: Optional[int]
 
-class PlanCreate(PlanBase): pass
+class PlanCreate(PlanBase): 
+    pass
+
 class PlanUpdate(BaseModel):
     estado: Optional[str]
     cantidad_comp: Optional[int]
@@ -287,23 +312,26 @@ class PlanUpdate(BaseModel):
 class PlanOut(PlanBase):
     id_plan: int
     cantidad_comp: int
-    fecha_ini_real: Optional[datetime.date]
-    fecha_fin_real: Optional[datetime.date]
+    fecha_ini_real: Optional[date]  # Cambio: era datetime.date
+    fecha_fin_real: Optional[date]  # Cambio: era datetime.date
     fecha_creacion: datetime
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class DetallePlanBase(BaseModel):
     id_plan: int
     id_etapa: int
-    fecha_ini_est: Optional[datetime.date]
-    fecha_fin_est: Optional[datetime.date]
+    fecha_ini_est: Optional[date]  # Cambio: era datetime.date
+    fecha_fin_est: Optional[date]  # Cambio: era datetime.date
     estado: Optional[str]
     responsable: Optional[str]
     observaciones: Optional[str]
     tiempo_inv: Optional[float]
     pct_completado: Optional[float]
 
-class DetallePlanCreate(DetallePlanBase): pass
+class DetallePlanCreate(DetallePlanBase): 
+    pass
+
 class DetallePlanUpdate(BaseModel):
     estado: Optional[str]
     responsable: Optional[str]
@@ -312,7 +340,8 @@ class DetallePlanUpdate(BaseModel):
 
 class DetallePlanOut(DetallePlanBase):
     id_detalle: int
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class MaterialBase(BaseModel):
     codigo_material: str
@@ -326,7 +355,9 @@ class MaterialBase(BaseModel):
     proveedor: Optional[str]
     estado: Optional[str]
 
-class MaterialCreate(MaterialBase): pass
+class MaterialCreate(MaterialBase): 
+    pass
+
 class MaterialUpdate(BaseModel):
     stock_actual: Optional[float]
     stock_minimo: Optional[float]
@@ -336,7 +367,8 @@ class MaterialUpdate(BaseModel):
 class MaterialOut(MaterialBase):
     id_material: int
     fecha_registro: datetime
-    class Config: orm_mode = True
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 class MatProyectoBase(BaseModel):
     id_proyecto: int
@@ -346,6 +378,7 @@ class MatProyectoBase(BaseModel):
 
 class MatProyectoCreate(MatProyectoBase):
     costo_unit: Optional[float]
+
 class MatProyectoUpdate(BaseModel):
     cantidad_uso: Optional[float]
     costo_total: Optional[float]
@@ -354,8 +387,9 @@ class MatProyectoOut(MatProyectoBase):
     id_mat_proy: int
     cantidad_uso: Optional[float]
     costo_total: Optional[float]
-    fecha_asig: datetime.date
-    class Config: orm_mode = True
+    fecha_asig: date  # Cambio: era datetime.date
+    class Config: 
+        from_attributes = True  # Cambio aquí
 
 # Branding proyectos
 class BrandingProyectoBase(BaseModel):
@@ -366,9 +400,9 @@ class BrandingProyectoBase(BaseModel):
     publico_objetivo: Optional[str]
     competencia: Optional[str]
     referencias_visuales: Optional[str]
-    fecha_inicio: Optional[datetime.date]
-    fecha_entrega_estimada: Optional[datetime.date]
-    fecha_entrega_real: Optional[datetime.date]
+    fecha_inicio: Optional[date]  # Cambio: era datetime.date
+    fecha_entrega_estimada: Optional[date]  # Cambio: era datetime.date
+    fecha_entrega_real: Optional[date]  # Cambio: era datetime.date
     estado: Optional[str]
     numero_revisiones: Optional[int]
     revisiones_incluidas: Optional[int]
@@ -387,9 +421,9 @@ class BrandingProyectoUpdate(BaseModel):
     publico_objetivo: Optional[str]
     competencia: Optional[str]
     referencias_visuales: Optional[str]
-    fecha_inicio: Optional[datetime.date]
-    fecha_entrega_estimada: Optional[datetime.date]
-    fecha_entrega_real: Optional[datetime.date]
+    fecha_inicio: Optional[date]  # Cambio: era datetime.date
+    fecha_entrega_estimada: Optional[date]  # Cambio: era datetime.date
+    fecha_entrega_real: Optional[date]  # Cambio: era datetime.date
     estado: Optional[str]
     numero_revisiones: Optional[int]
     revisiones_incluidas: Optional[int]
@@ -400,8 +434,7 @@ class BrandingProyectoUpdate(BaseModel):
 class BrandingProyectoOut(BrandingProyectoBase):
     id_proyecto_branding: int
     class Config:
-        orm_mode = True
-
+        from_attributes = True  # Cambio aquí
 
 # Branding entregables
 class EntregableBase(BaseModel):
@@ -423,8 +456,7 @@ class EntregableOut(EntregableBase):
     id_entregable: int
     fecha_creacion: datetime
     class Config:
-        orm_mode = True
-
+        from_attributes = True  # Cambio aquí
 
 # Branding revisiones
 class RevisionBase(BaseModel):
@@ -434,7 +466,7 @@ class RevisionBase(BaseModel):
     comentarios: Optional[str]
     cambios_solicitados: Optional[str]
     estado: Optional[str]
-    fecha_limite: Optional[datetime.date]
+    fecha_limite: Optional[date]  # Cambio: era datetime.date
     revisor: Optional[str]
 
 class RevisionCreate(RevisionBase):
@@ -446,13 +478,12 @@ class RevisionOut(RevisionBase):
     archivos_revision: Optional[bytes]
     nombre_archivos: Optional[str]
     class Config:
-        orm_mode = True
-
+        from_attributes = True  # Cambio aquí
 
 # Branding feedback fechas
 class FeedbackFechaBase(BaseModel):
     id_proyecto_branding: int
-    fecha_feedback: datetime.date
+    fecha_feedback: date  # Cambio: era datetime.date
     comentario: str
     prioridad: Optional[str]
     estado: Optional[str]
@@ -465,9 +496,9 @@ class FeedbackFechaOut(FeedbackFechaBase):
     id_feedback: int
     fecha_creacion: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
-# Proyecto
+# Proyecto Ecommerce
 class EcommerceProyectoBase(BaseModel):
     id_proyecto: int
     nombre_tienda: str
@@ -513,7 +544,7 @@ class EcommerceProyectoUpdate(BaseModel):
 class EcommerceProyectoOut(EcommerceProyectoBase):
     id_proyecto_ecommerce: int
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 # Credencial
 class EcommerceCredencialBase(BaseModel):
@@ -546,7 +577,7 @@ class EcommerceCredencialOut(EcommerceCredencialBase):
     id_credencial: int
     fecha_creacion: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 # Documento
 class EcommerceDocumentoBase(BaseModel):
@@ -568,7 +599,7 @@ class EcommerceDocumentoOut(EcommerceDocumentoBase):
     tamano_archivo: int
     fecha_subida: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 # Datos Marca
 class EcommerceDatosMarcaBase(BaseModel):
@@ -597,7 +628,7 @@ class EcommerceDatosMarcaOut(EcommerceDatosMarcaBase):
     id_datos_marca: int
     fecha_configuracion: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 # ——— FACTURAS ———
 class FacturaBase(BaseModel):
@@ -625,7 +656,8 @@ class FacturaBase(BaseModel):
     nombre_archivo_pdf: Optional[str] = None
     creada_por: Optional[int] = None
 
-class FacturaCreate(FacturaBase): pass
+class FacturaCreate(FacturaBase): 
+    pass
 
 class FacturaUpdate(BaseModel):
     serie: Optional[str]
@@ -650,7 +682,7 @@ class FacturaOut(FacturaBase):
     id_factura: int
     fecha_creacion: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 # ——— PAGOS ———
 class PagoBase(BaseModel):
@@ -668,7 +700,8 @@ class PagoBase(BaseModel):
     notas: Optional[str] = None
     registrado_por: Optional[int] = None
 
-class PagoCreate(PagoBase): pass
+class PagoCreate(PagoBase): 
+    pass
 
 class PagoUpdate(BaseModel):
     monto: Optional[float]
@@ -686,7 +719,7 @@ class PagoOut(PagoBase):
     id_pago: int
     fecha_registro: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 # ——— GASTOS ———
 class GastoBase(BaseModel):
@@ -706,7 +739,8 @@ class GastoBase(BaseModel):
     notas: Optional[str] = None
     registrado_por: Optional[int] = None
 
-class GastoCreate(GastoBase): pass
+class GastoCreate(GastoBase): 
+    pass
 
 class GastoUpdate(BaseModel):
     concepto: Optional[str]
@@ -725,7 +759,7 @@ class GastoOut(GastoBase):
     id_gasto: int
     fecha_registro: datetime
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
 
 # ——— CUENTAS POR COBRAR ———
 class CuentaCobrarBase(BaseModel):
@@ -739,7 +773,8 @@ class CuentaCobrarBase(BaseModel):
     estado: Optional[str] = "VIGENTE"
     notas: Optional[str] = None
 
-class CuentaCobrarCreate(CuentaCobrarBase): pass
+class CuentaCobrarCreate(CuentaCobrarBase): 
+    pass
 
 class CuentaCobrarUpdate(BaseModel):
     monto: Optional[float]
@@ -752,4 +787,4 @@ class CuentaCobrarUpdate(BaseModel):
 class CuentaCobrarOut(CuentaCobrarBase):
     id_cuenta_cobrar: int
     class Config:
-        orm_mode = True
+        from_attributes = True  # Cambio aquí
