@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from datetime import timedelta
 import models
-import auth_schemas
+from schemas import auth_schemas
 import auth_utils
 from dependencies import get_db, get_api_key
 
