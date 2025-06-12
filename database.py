@@ -4,13 +4,21 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 def get_database_url():
     """Construye la URL de la base de datos usando variables de entorno"""
+    # Primero intenta usar DATABASE_URL directamente
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        return database_url
+    
+    # Si no existe, construye usando variables separadas
     host = os.getenv("MYSQLHOST")
     user = os.getenv("MYSQLUSER")
     password = os.getenv("MYSQLPASSWORD")
     database = os.getenv("MYSQLDATABASE")
     port = os.getenv("MYSQLPORT", "3306")
     
-    # Construir la URL de conexión para MySQL
+    if not all([host, user, password, database]):
+        raise ValueError("Database environment variables are not set")
+    
     return f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
 
 # Crear el engine usando la URL construida
