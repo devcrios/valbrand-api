@@ -1,6 +1,10 @@
 import os
+import pymysql
+pymysql.install_as_MySQLdb()
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+
 
 def get_database_url():
     """Construye la URL de la base de datos usando variables de entorno"""
