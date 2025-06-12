@@ -81,6 +81,46 @@ class Usuario(UsuarioBase):
     class Config:
         from_attributes = True  # Cambio aquí
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserInfo(BaseModel):
+    id_usuario: int
+    nombre: str
+    apellidos: Optional[str]
+    email: str
+    cargo: Optional[str]
+    departamento: Optional[str]
+    id_rol: int
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+    user: UserInfo
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+class MessageResponse(BaseModel):
+    message: str
+
+class LoginAttempt(BaseModel):
+    email: str
+    success: bool
+    timestamp: datetime
+    ip_address: Optional[str] = None
+    
 class ProyectoTipoBase(BaseModel):
     nombre: str
     descripcion: Optional[str]

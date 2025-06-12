@@ -31,6 +31,7 @@ from routers import (
     ecommerce_documentos,
     ecommerce_datos_marca
 )
+from routers.auth_routes import router as auth_router
 
 app = FastAPI(
     title="ValBrand CRM",
@@ -88,6 +89,10 @@ app.include_router(facturas_router)
 app.include_router(pagos_router)
 app.include_router(gastos_router)
 app.include_router(cuentas_router)
+
+# Authentication router
+app.include_router(auth_router)
+
 
 @app.get("/", tags=["root"])
 def read_root():
