@@ -337,7 +337,7 @@ class TallerUpdate(BaseModel):
     email: Optional[str] = None
     especialidad: Optional[str] = None
     capacidad: Optional[int] = None
-    estado: Optional[str] = None
+    estado: Optional[TallerEstado] = None  # Cambiar de str a TallerEstado
     calificacion: Optional[float] = None
     notas: Optional[str] = None
 
