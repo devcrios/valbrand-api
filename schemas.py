@@ -342,7 +342,7 @@ class TallerUpdate(BaseModel):
     notas: Optional[str] = None
 
 class TallerOut(TallerBase):
-    id_taller: int
+    id_taller: str
     fecha_reg: datetime
     class Config: 
         from_attributes = True
