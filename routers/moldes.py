@@ -14,16 +14,29 @@ router = APIRouter(
 @router.post("/", response_model=schemas.MoldeOut, status_code=status.HTTP_201_CREATED)
 def create_molde(molde: schemas.MoldeCreate, db: Session = Depends(get_db)):
     try:
+        # Agregar logging para debugging
+        print(f"Datos recibidos: {molde.model_dump()}")
+        
         db_molde = models.MolderiaMolde(**molde.model_dump())
         db.add(db_molde)
         db.commit()
         db.refresh(db_molde)
         return db_molde
-    except SQLAlchemyError:
+        
+    except SQLAlchemyError as e:
         db.rollback()
+        # Mostrar el error específico para debugging
+        print(f"Error SQL: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Error al crear el molde"
+            detail=f"Error al crear el molde: {str(e)}"
+        )
+    except Exception as e:
+        db.rollback()
+        print(f"Error general: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error inesperado: {str(e)}"
         )
 
 @router.get("/", response_model=List[schemas.MoldeOut])
