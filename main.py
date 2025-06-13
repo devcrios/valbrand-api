@@ -4,8 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime, timezone
 import logging
 
-# Importar el middleware de auditoría
-from audit_middleware import AuditMiddleware
+# Comentar o eliminar la importación del middleware de auditoría
+# from audit_middleware import AuditMiddleware
 
 from routers.clients import router as clients_router
 from routers.users import router as users_router
@@ -36,7 +36,7 @@ from routers import (
     ecommerce_datos_marca
 )
 from routers.auth_routes import router as auth_router
-from routers.audit_router import router as audit_router  # Importar el router de auditoría
+from routers.audit_router import router as audit_router  # Mantener el router de auditoría
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -50,13 +50,10 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# ORDEN CORRECTO DE MIDDLEWARES
-# El orden importa: se ejecutan en orden inverso al registro
+# SOLO CORS MIDDLEWARE
+# Eliminar o comentar el middleware de auditoría
+# app.add_middleware(AuditMiddleware)
 
-# 1. Primero agregar middleware de auditoría (se ejecutará último, después de procesar la respuesta)
-app.add_middleware(AuditMiddleware)
-
-# 2. Después CORS (se ejecutará antes que auditoría, pero después de procesar la request)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # En producción especifica dominios específicos
@@ -108,7 +105,7 @@ app.include_router(cuentas_router)
 # Authentication router
 app.include_router(auth_router)
 
-# Audit router (agregar el router de auditoría)
+# Audit router (mantener solo el router, no el middleware)
 app.include_router(audit_router)
 
 @app.get("/", tags=["root"])
@@ -130,12 +127,12 @@ def health_check():
         "service": "ValBrand CRM API"
     }
 
-# Endpoint de prueba para verificar auditoría
+# Endpoint de prueba (ya no necesario para auditoría automática)
 @app.post("/test/audit", tags=["test"])
 def test_audit_endpoint():
-    """Endpoint de prueba para verificar que la auditoría funciona"""
+    """Endpoint de prueba"""
     return {
-        "message": "Este endpoint debería aparecer en los logs de auditoría",
+        "message": "Endpoint de prueba",
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
