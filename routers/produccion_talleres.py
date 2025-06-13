@@ -4,11 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from dependencies import get_db, get_api_key
 import models, schemas
-import logging
 import json
-
-# Configurar logger
-logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/produccion/talleres",
@@ -18,54 +14,54 @@ router = APIRouter(
 
 @router.post("/", response_model=schemas.TallerOut, status_code=status.HTTP_201_CREATED)
 def crear_taller(taller: schemas.TallerCreate, db: Session = Depends(get_db)):
-    logger.info(f"=== CREANDO NUEVO TALLER ===")
+    print(f"=== CREANDO NUEVO TALLER ===")
     
     # Log de datos recibidos
     try:
         datos_recibidos = taller.model_dump()
-        logger.info(f"Datos recibidos: {json.dumps(datos_recibidos, indent=2, default=str)}")
+        print(f"Datos recibidos: {json.dumps(datos_recibidos, indent=2, default=str)}")
     except Exception as e:
-        logger.error(f"Error al serializar datos recibidos: {e}")
-        logger.info(f"Datos recibidos (raw): {taller}")
+        print(f"Error al serializar datos recibidos: {e}")
+        print(f"Datos recibidos (raw): {taller}")
     
     # Log de validación del schema
-    logger.info(f"Tipo de schema recibido: {type(taller)}")
-    logger.info(f"Campos del schema: {list(taller.model_fields.keys()) if hasattr(taller, 'model_fields') else 'No disponible'}")
+    print(f"Tipo de schema recibido: {type(taller)}")
+    print(f"Campos del schema: {list(taller.model_fields.keys()) if hasattr(taller, 'model_fields') else 'No disponible'}")
     
     try:
         # Crear el objeto de base de datos
-        logger.info("Creando objeto ProduccionTaller...")
+        print("Creando objeto ProduccionTaller...")
         db_taller = models.ProduccionTaller(**taller.model_dump())
-        logger.info(f"Objeto creado exitosamente: {type(db_taller)}")
+        print(f"Objeto creado exitosamente: {type(db_taller)}")
         
         # Log de los datos que se van a insertar
-        logger.info("Datos a insertar en la BD:")
+        print("Datos a insertar en la BD:")
         for campo, valor in taller.model_dump().items():
-            logger.info(f"  {campo}: {valor} (tipo: {type(valor)})")
+            print(f"  {campo}: {valor} (tipo: {type(valor)})")
         
         # Intentar guardar en la base de datos
-        logger.info("Agregando objeto a la sesión de BD...")
+        print("Agregando objeto a la sesión de BD...")
         db.add(db_taller)
         
-        logger.info("Ejecutando commit...")
+        print("Ejecutando commit...")
         db.commit()
         
-        logger.info("Ejecutando refresh...")
+        print("Ejecutando refresh...")
         db.refresh(db_taller)
         
-        logger.info(f"Taller creado exitosamente con ID: {db_taller.id}")
+        print(f"Taller creado exitosamente con ID: {db_taller.id}")
         
         # Log del objeto retornado
-        logger.info("Datos del taller creado:")
+        print("Datos del taller creado:")
         for column in db_taller.__table__.columns:
             valor = getattr(db_taller, column.name)
-            logger.info(f"  {column.name}: {valor} (tipo: {type(valor)})")
+            print(f"  {column.name}: {valor} (tipo: {type(valor)})")
         
         return db_taller
         
     except IntegrityError as e:
-        logger.error(f"Error de integridad en la BD: {e}")
-        logger.error(f"Detalles del error: {e.orig}")
+        print(f"Error de integridad en la BD: {e}")
+        print(f"Detalles del error: {e.orig}")
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -73,8 +69,8 @@ def crear_taller(taller: schemas.TallerCreate, db: Session = Depends(get_db)):
         )
     
     except Exception as e:
-        logger.error(f"Error inesperado al crear taller: {e}")
-        logger.error(f"Tipo de error: {type(e)}")
+        print(f"Error inesperado al crear taller: {e}")
+        print(f"Tipo de error: {type(e)}")
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -83,21 +79,21 @@ def crear_taller(taller: schemas.TallerCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=List[schemas.TallerOut])
 def listar_talleres(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    logger.info(f"=== LISTANDO TALLERES ===")
-    logger.info(f"Parámetros: skip={skip}, limit={limit}")
+    print(f"=== LISTANDO TALLERES ===")
+    print(f"Parámetros: skip={skip}, limit={limit}")
     
     try:
         talleres = db.query(models.ProduccionTaller).offset(skip).limit(limit).all()
-        logger.info(f"Talleres encontrados: {len(talleres)}")
+        print(f"Talleres encontrados: {len(talleres)}")
         
         # Log de cada taller encontrado
         for i, taller in enumerate(talleres):
-            logger.info(f"Taller {i+1}: ID={taller.id}, Codigo={taller.codigo}, Nombre={taller.nombre}")
+            print(f"Taller {i+1}: ID={taller.id}, Codigo={taller.codigo}, Nombre={taller.nombre}")
         
         return talleres
         
     except Exception as e:
-        logger.error(f"Error al listar talleres: {e}")
+        print(f"Error al listar talleres: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error al obtener talleres: {str(e)}"
@@ -105,7 +101,7 @@ def listar_talleres(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
 
 @router.get("/{id_taller}", response_model=schemas.TallerOut)
 def obtener_taller(id_taller: int, db: Session = Depends(get_db)):
-    logger.info(f"=== OBTENIENDO TALLER ID: {id_taller} ===")
+    print(f"=== OBTENIENDO TALLER ID: {id_taller} ===")
     
     try:
         taller = db.query(models.ProduccionTaller).filter(
@@ -113,19 +109,19 @@ def obtener_taller(id_taller: int, db: Session = Depends(get_db)):
         ).first()
         
         if not taller:
-            logger.warning(f"Taller con ID {id_taller} no encontrado")
+            print(f"Taller con ID {id_taller} no encontrado")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail="Taller no encontrado"
             )
         
-        logger.info(f"Taller encontrado: {taller.codigo} - {taller.nombre}")
+        print(f"Taller encontrado: {taller.codigo} - {taller.nombre}")
         return taller
         
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error al obtener taller {id_taller}: {e}")
+        print(f"Error al obtener taller {id_taller}: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error al obtener taller: {str(e)}"
@@ -137,43 +133,43 @@ def actualizar_taller(
     datos: schemas.TallerUpdate, 
     db: Session = Depends(get_db)
 ):
-    logger.info(f"=== ACTUALIZANDO TALLER ID: {id_taller} ===")
+    print(f"=== ACTUALIZANDO TALLER ID: {id_taller} ===")
     
     try:
         # Log de datos recibidos
         datos_actualizacion = datos.model_dump(exclude_unset=True)
-        logger.info(f"Datos de actualización: {json.dumps(datos_actualizacion, indent=2, default=str)}")
+        print(f"Datos de actualización: {json.dumps(datos_actualizacion, indent=2, default=str)}")
         
         taller = db.query(models.ProduccionTaller).filter(
             models.ProduccionTaller.id == id_taller
         ).first()
         
         if not taller:
-            logger.warning(f"Taller con ID {id_taller} no encontrado para actualizar")
+            print(f"Taller con ID {id_taller} no encontrado para actualizar")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail="Taller no encontrado"
             )
         
-        logger.info(f"Taller encontrado: {taller.codigo} - {taller.nombre}")
+        print(f"Taller encontrado: {taller.codigo} - {taller.nombre}")
         
         # Aplicar actualizaciones
-        logger.info("Aplicando actualizaciones:")
+        print("Aplicando actualizaciones:")
         for campo, valor in datos_actualizacion.items():
             valor_anterior = getattr(taller, campo, None)
             setattr(taller, campo, valor)
-            logger.info(f"  {campo}: {valor_anterior} -> {valor}")
+            print(f"  {campo}: {valor_anterior} -> {valor}")
         
         db.commit()
         db.refresh(taller)
         
-        logger.info(f"Taller actualizado exitosamente")
+        print(f"Taller actualizado exitosamente")
         return taller
         
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error al actualizar taller {id_taller}: {e}")
+        print(f"Error al actualizar taller {id_taller}: {e}")
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -182,7 +178,7 @@ def actualizar_taller(
 
 @router.delete("/{id_taller}", status_code=status.HTTP_204_NO_CONTENT)
 def borrar_taller(id_taller: int, db: Session = Depends(get_db)):
-    logger.info(f"=== BORRANDO TALLER ID: {id_taller} ===")
+    print(f"=== BORRANDO TALLER ID: {id_taller} ===")
     
     try:
         taller = db.query(models.ProduccionTaller).filter(
@@ -190,23 +186,23 @@ def borrar_taller(id_taller: int, db: Session = Depends(get_db)):
         ).first()
         
         if not taller:
-            logger.warning(f"Taller con ID {id_taller} no encontrado para borrar")
+            print(f"Taller con ID {id_taller} no encontrado para borrar")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail="Taller no encontrado"
             )
         
-        logger.info(f"Taller encontrado para borrar: {taller.codigo} - {taller.nombre}")
+        print(f"Taller encontrado para borrar: {taller.codigo} - {taller.nombre}")
         
         db.delete(taller)
         db.commit()
         
-        logger.info(f"Taller borrado exitosamente")
+        print(f"Taller borrado exitosamente")
         
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error al borrar taller {id_taller}: {e}")
+        print(f"Error al borrar taller {id_taller}: {e}")
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

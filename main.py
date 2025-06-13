@@ -111,15 +111,6 @@ app.include_router(auth_router)
 # Audit router (agregar el router de auditoría)
 app.include_router(audit_router)
 
-import logging
-
-# Configurar logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-
-
 @app.get("/", tags=["root"])
 def read_root():
     """Endpoint raíz de la API"""
