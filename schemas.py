@@ -6,36 +6,36 @@ from models import EcommerceProyectoEstado, EcommercePlataforma
 
 class ClienteBase(BaseModel):
     nombre: str
-    nombre_contacto: Optional[str]
-    email: Optional[EmailStr]
-    telefono: Optional[str]
-    direccion: Optional[str]
-    ciudad: Optional[str]
-    pais: Optional[str]
-    codigo_postal: Optional[str]
-    rfc: Optional[str]
+    nombre_contacto: Optional[str] = None
+    email: Optional[EmailStr] = None
+    telefono: Optional[str] = None
+    direccion: Optional[str] = None
+    ciudad: Optional[str] = None
+    pais: Optional[str] = None
+    codigo_postal: Optional[str] = None
+    rfc: Optional[str] = None
     estado: ClienteEstado = ClienteEstado.ACTIVO
-    notas: Optional[str]
+    notas: Optional[str] = None
     tipo_cliente: ClienteTipo
-    creado_por: Optional[int]
+    creado_por: Optional[int] = None
 
 class ClienteCreate(ClienteBase):
     pass
 
 class ClienteUpdate(BaseModel):
-    nombre: Optional[str]
-    nombre_contacto: Optional[str]
-    email: Optional[EmailStr]
-    telefono: Optional[str]
-    direccion: Optional[str]
-    ciudad: Optional[str]
-    pais: Optional[str]
-    codigo_postal: Optional[str]
-    rfc: Optional[str]
-    estado: Optional[ClienteEstado]
-    notas: Optional[str]
-    tipo_cliente: Optional[ClienteTipo]
-    creado_por: Optional[int]
+    nombre: Optional[str] = None
+    nombre_contacto: Optional[str] = None
+    email: Optional[EmailStr] = None
+    telefono: Optional[str] = None
+    direccion: Optional[str] = None
+    ciudad: Optional[str] = None
+    pais: Optional[str] = None
+    codigo_postal: Optional[str] = None
+    rfc: Optional[str] = None
+    estado: Optional[ClienteEstado] = None
+    notas: Optional[str] = None
+    tipo_cliente: Optional[ClienteTipo] = None
+    creado_por: Optional[int] = None
 
 class Cliente(ClienteBase):
     id_cliente: int
@@ -43,7 +43,7 @@ class Cliente(ClienteBase):
     fecha_actualizacion: datetime
 
     class Config:
-        from_attributes = True  # Cambio aquí
+        from_attributes = True
 
 class UsuarioBase(BaseModel):
     nombre: str
@@ -120,7 +120,7 @@ class LoginAttempt(BaseModel):
     success: bool
     timestamp: datetime
     ip_address: Optional[str] = None
-    
+
 class ProyectoTipoBase(BaseModel):
     nombre: str
     descripcion: Optional[str]
