@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List, Dict
 from datetime import date, datetime
-from models import ClienteEstado, ClienteTipo, UsuarioEstado
+from models import ClienteEstado, ClienteTipo, UsuarioEstado, MoldeEstado
 from models import EcommerceProyectoEstado, EcommercePlataforma
 
 class ClienteBase(BaseModel):
@@ -190,7 +190,7 @@ class MoldeBase(BaseModel):
     categoria: Optional[str]
     talla: Optional[str]
     version: Optional[str]
-    estado: Optional[str]
+    estado: Optional[MoldeEstado] 
     notas: Optional[str]
     medidas: Optional[str]
     observaciones_tecnicas: Optional[str]
